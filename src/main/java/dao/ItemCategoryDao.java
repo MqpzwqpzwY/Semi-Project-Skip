@@ -1,0 +1,34 @@
+package dao;
+
+import dto.ItemCategoryDTO;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import service.SqlSessionFactoryService;
+
+public class ItemCategoryDao {
+    private final String NAMESPACE = "mybatis.mapper.ItemCategoryMapper";
+    SqlSessionFactory sqlSessionFactory = SqlSessionFactoryService.getSqlSessionFactory();
+
+    public ItemCategoryDTO getItemCategoryByItem_type(String item_type) {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            return sqlSession.selectOne(NAMESPACE + ".selectItemCategoryById", item_type);
+        }
+
+    }
+
+    public int insertItemCategory(ItemCategoryDTO itemCategory) {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            int n = sqlSession.insert(NAMESPACE + ".insertItemCategory", itemCategory);
+            sqlSession.commit();
+            return n;
+        }
+    }
+
+    public int deleteItemCategory(int category_id) {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            int n = sqlSession.delete(NAMESPACE + ".deleteItemCategory", category_id);
+            sqlSession.commit();
+            return n;
+        }
+    }
+}

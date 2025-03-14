@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.mapper.ItemCategoryMapper">
+    <select id="selectItemCategoryById" parameterType="String" resultType="dto.ItemCategoryDTO">
+        select * from item_category where item_type = #{item}
+    </select>
+
+    <select id="getList" resultType="arraylist">
+        select * from item_category
+    </select>
+
+    <insert id="insertItemCategory" parameterType="dto.ItemCategoryDTO">
+        insert into item_category values(item_category.nextval, #{item_type}, #{price_per_hour})
+    </insert>
+
+    <delete id="deleteItemCategory" parameterType="int">
+        delete from rent_item where category_id = #{category_id}
+    </delete>
+</mapper>

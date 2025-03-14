@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.mapper.ItemMapper">
+    <resultMap id="rentItemWithCategoryAndSale" type="dto.PaymentItemDTO">
+        <id property="item_id" column="item_id"/>
+        <result property="category_id" column="category_id"/>
+        <result property="rentalShop_id" column="rentalShop_id"/>
+        <result property="item_name" column="item_name"/>
+        <result property="item_detail" column="item_detail"/>
+        <result property="total_quantity" column="total_quantity"/>
+        <result property="item_img" column="item_img"/>
+        <result property="created_at" column="item_created_at"/>
+
+        <!-- ItemCategory 매핑 -->
+        <association property="itemCategoryDTO" javaType="dto.ItemCategoryDTO">
+            <id property="category_id" column="category_id"/>
+            <result property="item_type" column="item_type"/>
+            <result property="price_per_hour" column="price_per_hour"/>
+        </association>
+
+    </resultMap>
+
+    <select id="getAllRentItems" resultMap="rentItemWithCategoryAndSale">
+        SELECT
+        ri.item_id,
+        ri.category_id,
+        ri.rentalShop_id,
+        ri.item_name,
+        ri.item_detail,
+        ri.total_quantity,
+        ri.item_img,
+        ri.created_at as item_created_at,
+        ic.item_type,
+        ic.price_per_hour
+        FROM rent_item ri
+        LEFT JOIN item_category ic ON ri.category_id = ic.category_id
+        WHERE ri.total_quantity > 0
+        ORDER BY ri.item_id ASC
+    </select>
+
+    <!-- 카테고리별 렌탈 아이템 조회 -->
+    <select id="getRentItemsByCategory" parameterType="int" resultMap="rentItemWithCategoryAndSale">
+        SELECT
+        ri.item_id,
+        ri.category_id,
+        ri.rentalShop_id,
+        ri.item_name,
+        ri.item_detail,
+        ri.total_quantity,
+        ri.item_img,
+        ri.created_at as item_created_at,
+        ic.item_type,
+        ic.price_per_hour
+        FROM rent_item ri
+        LEFT JOIN item_category ic ON ri.category_id = ic.category_id
+        WHERE ri.category_id = #{category_id}
+        AND ri.total_quantity > 0
+        ORDER BY ri.item_id ASC
+    </select>
+
+    <!-- 특정 아이템 상세 조회 -->
+    <select id="getRentItemById" parameterType="int" resultMap="rentItemWithCategoryAndSale">
+        SELECT
+        ri.item_id,
+        ri.category_id,
+        ri.rentalShop_id,
+        ri.item_name,
+        ri.item_detail,
+        ri.total_quantity,
+        ri.item_img,
+        ri.created_at as item_created_at,
+        ic.item_type,
+        ic.price_per_hour
+        FROM rent_item ri
+        LEFT JOIN item_category ic ON ri.category_id = ic.category_id
+        WHERE ri.item_id = #{item_id}
+    </select>
+
+</mapper>

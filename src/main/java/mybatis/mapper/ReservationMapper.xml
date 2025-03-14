@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.mapper.ReservationMapper">
+    <insert id="insertRentalReservation" parameterType="dto.RentalReservationDTO" useGeneratedKeys="true" keyProperty="rent_reserv_id">
+        INSERT INTO rental_reservation (
+            rent_reserv_id,
+            rentalshop_id,
+            uuid,
+            rental_start,
+            rental_end,
+            total_price,
+            status,
+            created_at
+        ) VALUES (
+            rent_reserv_seq.nextval,
+            #{rentalshop_id},
+            #{uuid},
+            #{rental_start},
+            #{rental_end},
+            #{total_price},
+            '예약완료',
+            SYSDATE
+        )
+        <selectKey keyProperty="rent_reserv_id" resultType="int" order="AFTER">
+            SELECT rent_reserv_seq.currval FROM dual
+        </selectKey>
+    </insert>
+
+    <insert id="insertRentReservationItem" parameterType="dto.RentReservationItemDTO" useGeneratedKeys="true" keyProperty="rent_item_id">
+        INSERT INTO rent_reservation_item (
+            rent_item_id,
+            rent_reserv_id,
+            item_id,
+            quantity,
+            subtotal_price
+        ) VALUES (
+         RENT_ITEM_SEQ.nextval,
+            #{rent_reserv_id},
+            #{item_id},
+            #{quantity},
+            #{subtotal_price}
+        )
+        <selectKey keyProperty="rent_item_id" resultType="int" order="AFTER">
+            SELECT RENT_ITEM_SEQ.currval FROM dual
+        </selectKey>
+    </insert>
+
+    <select id="getRentReservationItemById" parameterType="int" resultType="dto.RentReservationItemDTO">
+        SELECT 
+            rent_item_id,
+            rent_reserv_id,
+            item_id,
+            quantity,
+            subtotal_price
+        FROM 
+            rent_reservation_item
+        WHERE 
+            rent_item_id = #{rent_item_id}
+    </select>
+
+
+</mapper> 
